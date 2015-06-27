@@ -6,13 +6,14 @@ namespace MorseCode
 {
     static class Program
     {
-        public static Dictionary<char, List<byte>> MorseAlphabet { get; private set; }
         private static readonly char EndMessageSymbol = '~';
+        private static readonly int DotSignalDuration = 200;
+        private static readonly int DashSignalDuration = 800;
+        private static readonly int SignalFrequency = 800;
+        private static readonly int SymbolBetweenPause = 400;
 
-        static Program()
+        public static Dictionary<char, List<byte>> MorseAlphabet = new Dictionary<char, List<byte>>
         {
-            MorseAlphabet = new Dictionary<char, List<byte>>
-            {
                 {'a', new List<byte>{0,1}},
                 {'b',new List<byte>{1,0,0,0}},
                 {'w',new List<byte>{0,1,1}},
@@ -51,9 +52,10 @@ namespace MorseCode
                 {'0',new List<byte>{1,1,1,1,1}},
                 {'.',new List<byte>{0,0,0,0,0,0}},
                 {',',new List<byte>{0,1,0,1,0,1}},
-                {'~',new List<byte>{0, 0, 1, 0, 1}}
-            };
-        }
+                {'~',new List<byte>{0,0,1,0,1}}
+        };
+
+
 
         static void Main()
         {
@@ -71,17 +73,17 @@ namespace MorseCode
                 MorseAlphabet[charToMorse].ForEach(sc =>
                 {
                     Beep(sc);
-                    Thread.Sleep(400);
+                    Thread.Sleep(SymbolBetweenPause);
                 });
             }
         }
 
         private static void Beep(byte signalCode)
         {
-            var sygnalLenght = 200;
+            var sygnalLenght = DotSignalDuration;
             if (signalCode.ToBool())
-                sygnalLenght = 800;
-            Console.Beep(800, sygnalLenght);
+                sygnalLenght = DashSignalDuration;
+            Console.Beep(SignalFrequency, sygnalLenght);
         }
         public static bool ToBool(this byte input)
         {
