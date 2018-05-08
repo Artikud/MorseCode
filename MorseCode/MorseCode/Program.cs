@@ -6,13 +6,12 @@ namespace MorseCode
 {
     static class Program
     {
-        private static readonly char EndMessageSymbol = '~';
-        private static readonly int DotSignalDuration = 200;
-        private static readonly int DashSignalDuration = 800;
-        private static readonly int SignalFrequency = 800;
-        private static readonly int SymbolBetweenPause = 400;
+        private const int DotSignalDuration = 200;
+        private const int DashSignalDuration = 800;
+        private const int SignalFrequency = 800;
+        private const int SymbolBetweenPause = 400;
 
-        public static Dictionary<char, List<byte>> MorseAlphabet = new Dictionary<char, List<byte>>
+        private static readonly Dictionary<char, List<byte>> MorseAlphabet = new Dictionary<char, List<byte>>
         {
                 {'a', new List<byte>{0,1}},
                 {'b',new List<byte>{1,0,0,0}},
@@ -63,11 +62,9 @@ namespace MorseCode
             if (inputString == null)
                 return;
 
-            inputString += EndMessageSymbol;
             foreach (var charToMorse in inputString.ToLowerInvariant())
             {
-                List<byte> outList;
-                if (!MorseAlphabet.TryGetValue(charToMorse, out outList))
+                if (!MorseAlphabet.TryGetValue(charToMorse, out _))
                     continue;
 
                 MorseAlphabet[charToMorse].ForEach(sc =>
@@ -82,10 +79,13 @@ namespace MorseCode
         {
             var sygnalLenght = DotSignalDuration;
             if (signalCode.ToBool())
+            {
                 sygnalLenght = DashSignalDuration;
+            }
             Console.Beep(SignalFrequency, sygnalLenght);
         }
-        public static bool ToBool(this byte input)
+
+        private static bool ToBool(this byte input)
         {
             return input == 1;
         }
